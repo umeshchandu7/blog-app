@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Post</title>
+    <style>
+        .container {
+            max-width: 80%;
+            width: 100%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid black;
+            height: 90vh;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+        .dis {
+            display: inline;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .matter {
+            text-align: left;
+            margin: 20px;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h2>Blog Application</h2>
+        <a style="margin: 20px 0 0 0">login</a>
+    </header>
+    <div class="content">
+        <h1 th:text="${post.title}"/>
+        <div>
+             <span>
+             <h3 class="dis" th:text="${post.author.name}"/>,
+             </span>
+            <span>
+             <h4 class="dis" th:text="${post.publishedAt}"/>
+            </span>
+        </div>
+        <p class="matter" th:text="${post.content}"/>
+    </div>
+    <footer>
+        <a th:href="@{/updateForm(formId = ${post.id})}" >
+            <input type="button" value="Update">
+        </a>
+        <a th:href="@{/deleteForm(formId = ${post.id})}" >
+            <input type="button" value="Delete" th:method="post">
+        </a>
+    </footer>
+</div>
+</body>
+</html>

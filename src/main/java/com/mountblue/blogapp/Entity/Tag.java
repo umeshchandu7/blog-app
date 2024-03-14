@@ -22,6 +22,13 @@ public class Tag {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public Tag() {
+    }
+
+    public Tag(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
@@ -60,5 +67,12 @@ public class Tag {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

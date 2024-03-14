@@ -3,6 +3,7 @@ package com.mountblue.blogapp.Entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,7 @@ public class Post {
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinTable(name = "post_tags",joinColumns = @JoinColumn(name = "post_id"),inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
@@ -100,12 +102,39 @@ public class Post {
         this.comments = comments;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public String getTags() {
+        StringBuilder tagsString = new StringBuilder();
+        if(this.tags==null)
+        {
+            return null;
+        }
+        for(Tag tag:this.tags)
+        {
+            tagsString.append(tag.getName());
+            tagsString.append(",");
+        }
+        tagsString.delete(tagsString.length()-1,tagsString.length()-1);
+        return tagsString.toString();
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(String tag) {
+        List<String> tagList = List.of(tag.split(","));
+        List<Tag> tags = new ArrayList<>();
+        for(String tagName:tagList)
+        {
+            tags.add(new Tag(tagName));
+        }
         this.tags = tags;
+    }
+
+    public void setTagsList(List<Tag> tags)
+    {
+        this.tags = null;
+        this.tags = tags;
+    }
+    public List<Tag> getTagList()
+    {
+        return tags;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        .container{
+            display: grid;
+            grid-template-columns: auto auto;
+            margin: 20px;
+            gap: 10px;
+        }
+
+        .items{
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            top: 0;
+            left: 0;
+            align-self: center;
+            padding: 20px;
+            gap: 5px;
+            height: 20vh;
+            overflow: scroll;
+        }
+    </style>
+    <title>ALL POSTS</title>
+</head>
+<body>
+     <div class="container">
+         <div class = "posts" th:each="singlepost: ${allposts}">
+             <a th:method="post" th:href="@{/readForm(formId = ${singlepost.id})}" >
+             <div class = "items">
+                 <h3 th:text="${singlepost.title}"/>
+                 <span th:text="${singlepost.author.name}"/>
+                 <span th:text="${singlepost.publishedAt}"/>
+                 <span th:text="${singlepost.content}"/>
+             </div>
+             </a>
+         </div>
+     </div>
+</body>
+</html>
