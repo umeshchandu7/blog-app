@@ -26,7 +26,7 @@ public class Post {
     private LocalDateTime publishedAt;
     @Column(name = "is_published")
     private Boolean isPublished;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
@@ -38,6 +38,31 @@ public class Post {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", excerpt='" + excerpt + '\'' +
+                ", content='" + content + '\'' +
+                ", author=" + author +
+                ", publishedAt=" + publishedAt +
+                ", isPublished=" + isPublished +
+                ", comments=" + comments +
+                ", tags=" + tags +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
+
+    public void addComment(Comment comment)
+    {
+        if(comments==null)
+        {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
     public int getId() {
         return id;
     }

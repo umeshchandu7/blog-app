@@ -6,13 +6,13 @@
     <title>Post</title>
     <style>
         .container {
-            max-width: 80%;
-            width: 100%;
+            max-width: 60%;
+            width: 80%;
             margin: auto;
             display: flex;
             flex-direction: column;
             border: 1px solid black;
-            height: 90vh;
+            height: 80vh;
             padding: 20px;
         }
 
@@ -41,6 +41,41 @@
             margin-top: auto;
         }
 
+        .container1 {
+            max-width: 60%;
+            width: 80%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid black;
+            height: auto;
+            padding: 20px;
+            row-gap: 10px;
+        }
+
+        .entry {
+            margin: auto;
+            width: 100%;
+            max-width: 90%;
+            height: 5vh;
+            font-size: 1rem;
+            padding: 5px;
+        }
+
+        .items {
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+        }
+        .buttons{
+            align-content: end;
+            justify-content: end;
+        }
+
     </style>
 </head>
 <body>
@@ -62,13 +97,35 @@
         <p class="matter" th:text="${post.content}"/>
     </div>
     <footer>
-        <a th:href="@{/updateForm(formId = ${post.id})}" >
+        <a th:href="@{/updateForm(formId = ${post.id})}" th:method="post">
             <input type="button" value="Update">
         </a>
-        <a th:href="@{/deleteForm(formId = ${post.id})}" >
+        <a th:href="@{/deleteForm(formId = ${post.id})}" th:method="post">
             <input type="button" value="Delete" th:method="post">
         </a>
     </footer>
+</div>
+<div class="container1">
+    <h3>ADD COMMENT</h3>
+    <form th:method="post" th:action="@{/addComment}" th:object="${post}">
+        <div>
+            <input class="entry" type="text" th:field="${comment.comment}">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="${comment.coId}" >
+        </div>
+        <input type="submit" value="comment">
+    </form>
+    <div class="items" th:each="eachcomment:${post.comments}">
+        <p th:text="${eachcomment.comment}"/>
+        <div class = "buttons">
+            <a th:method="post" th:href="@{/updateComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
+                <input type="button" value="Update">
+            </a>
+            <a th:method="post" th:href="@{/deleteComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
+                <input type="button" value="delete">
+            </a>
+        </div>
+    </div>
 </div>
 </body>
 </html>

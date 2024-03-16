@@ -1,8 +1,10 @@
 package com.mountblue.blogapp.Service;
 
+import com.mountblue.blogapp.Entity.Comment;
 import com.mountblue.blogapp.Entity.Post;
 import com.mountblue.blogapp.Entity.Tag;
 import com.mountblue.blogapp.Entity.User;
+import com.mountblue.blogapp.Repository.CommentRepository;
 import com.mountblue.blogapp.Repository.PostRepository;
 import com.mountblue.blogapp.Repository.TagRepository;
 import com.mountblue.blogapp.Repository.UserRepository;
@@ -19,6 +21,8 @@ public class PostService {
 
     private TagRepository tagRepository;
     private UserRepository userRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Autowired
     public PostService(PostRepository postRepository, TagRepository tagRepository, UserRepository userRepository) {
@@ -58,5 +62,24 @@ public class PostService {
     public void deletePost(Post post)
     {
         postRepository.delete(post);
+    }
+
+    public Optional<Comment> getCommentByComment(String comment)
+    {
+       return   commentRepository.findByComment(comment);
+    }
+    public Comment getCommentById(Integer id)
+    {
+        return commentRepository.findById(id).get();
+    }
+
+    public void saveComment(Comment comment)
+    {
+        commentRepository.save(comment);
+    }
+
+    public void deleteCommentById(Integer id)
+    {
+        commentRepository.deleteById(id);
     }
 }

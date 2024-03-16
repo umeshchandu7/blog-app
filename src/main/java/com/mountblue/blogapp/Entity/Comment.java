@@ -10,7 +10,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private int coId;
     @Column(name = "name")
     private String name;
     @Column(name = "email")
@@ -22,12 +22,12 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public int getId() {
-        return id;
+    public int getCoId() {
+        return coId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCoId(int coId) {
+        this.coId = coId;
     }
 
     public String getName() {
