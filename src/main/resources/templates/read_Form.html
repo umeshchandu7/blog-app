@@ -97,17 +97,17 @@
         <p class="matter" th:text="${post.content}"/>
     </div>
     <footer>
-        <a th:href="@{/updateForm(formId = ${post.id})}" th:method="post">
+        <a th:href="@{/post/updateForm(formId = ${post.id})}" th:method="get">
             <input type="button" value="Update">
         </a>
-        <a th:href="@{/deleteForm(formId = ${post.id})}" th:method="post">
+        <a th:href="@{/post/deleteForm(formId = ${post.id})}" th:method="get">
             <input type="button" value="Delete" th:method="post">
         </a>
     </footer>
 </div>
 <div class="container1">
     <h3>ADD COMMENT</h3>
-    <form th:method="post" th:action="@{/addComment}" th:object="${post}">
+    <form th:method="post" th:action="@{/comment/addComment}" th:object="${post}">
         <div>
             <input class="entry" type="text" th:field="${comment.comment}">
             <input type="hidden" th:field="*{id}">
@@ -118,10 +118,10 @@
     <div class="items" th:each="eachcomment:${post.comments}">
         <p th:text="${eachcomment.comment}"/>
         <div class = "buttons">
-            <a th:method="post" th:href="@{/updateComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
+            <a th:method="post" th:href="@{/comment/updateComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
                 <input type="button" value="Update">
             </a>
-            <a th:method="post" th:href="@{/deleteComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
+            <a th:method="post" th:href="@{/comment/deleteComment(commentId = ${eachcomment.coId},postId = ${post.id})}">
                 <input type="button" value="delete">
             </a>
         </div>

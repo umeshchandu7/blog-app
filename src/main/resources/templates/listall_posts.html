@@ -33,7 +33,7 @@
 <body>
      <div class="container">
          <div class = "posts" th:each="singlepost: ${allposts}">
-             <a th:method="post" th:href="@{/readForm(formId = ${singlepost.id})}" >
+             <a th:method="post" th:href="@{/post/readForm(formId = ${singlepost.id})}" >
              <div class = "items">
                  <h3 th:text="${singlepost.title}"/>
                  <span th:text="${singlepost.author.name}"/>
