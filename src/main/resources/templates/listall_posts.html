@@ -3,45 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
-        a{
+        a {
             text-decoration: none;
             color: black;
         }
-        .container{
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header {
+            max-width: 92%;
+            width: 100%;
+            margin: 10px;
+           border: 1px solid black;
+            padding: 20px;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 20% 80%;
+            width: 100%;
+            max-width: 92%;
+            height: auto;
+            gap: 20px;
+        }
+
+        .first {
+            border: 1px solid black;
+            padding-left: 10px;
+        }
+
+       .tag{
+           height: 20px;
+           overflow-y: scroll;
+
+       }
+        .second {
+            border: 1px solid black;
+            margin-left: 30px;
+
+        }
+         .tag > form{
+             display: flex;
+             flex-direction: column;
+             gap: 10px;
+         }
+
+        .container {
             display: grid;
             grid-template-columns: auto auto;
             margin: 20px;
-            gap: 10px;
+            gap: 20px;
         }
 
-        .items{
+        .items {
             border: 1px solid black;
             display: flex;
             flex-direction: column;
             top: 0;
             left: 0;
+            text-align: center;
             align-self: center;
             padding: 20px;
             gap: 5px;
-            height: 20vh;
+            height: auto;
             overflow: scroll;
         }
+        .footer {
+            max-width: 90%;
+            width: 100%;
+            margin: 10px;
+            padding: 20px;
+        }
+
+        select#sortby option[disabled] {
+            font-style: italic;
+            color: #888; /* or any other color you prefer */
+        }
+
     </style>
     <title>ALL POSTS</title>
 </head>
 <body>
-     <div class="container">
-         <div class = "posts" th:each="singlepost: ${allposts}">
-             <a th:method="post" th:href="@{/post/readForm(formId = ${singlepost.id})}" >
-             <div class = "items">
-                 <h3 th:text="${singlepost.title}"/>
-                 <span th:text="${singlepost.author.name}"/>
-                 <span th:text="${singlepost.publishedAt}"/>
-                 <span th:text="${singlepost.content}"/>
-             </div>
-             </a>
-         </div>
-     </div>
+
+<div class="header">
+    <h2>BLOG APPLICATION</h2>
+    <div class="filters">
+        <div>
+            <form th:action="@{/post/sort}" method="get">
+                <select id="sortBy" name="direction">
+                    <option disabled selected>Sort by:</option>
+                    <option value="ASC">Oldest</option>
+                    <option value="DESC">Latest</option>
+                </select>
+                <input type="hidden" th:value="${search}" name="search">
+                <input type="submit" value="Submit">
+            </form>
+
+        </div>
+        <div>
+            <form th:action="@{/post/search}" method="get">
+                <input name="search" type="text" placeholder="search by title,tag,content">
+                <input type="submit" value="submit">
+            </form>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="first">
+        <form th:action="@{/post/filter}" th:method="get">
+            <label>Tags</label>
+            <div class="tag" th:each="tag:${alltags}">
+                <input th:if="${tag.name != null}" th:type="checkbox" th:name="tag" th:value="${tag.name}">
+                <span th:if="${tag.name != null}" th:text="${tag.name}"></span>
+            </div>
+            <label>Author</label>
+            <div class="author" th:each="author:${allusers}">
+                <input th:if="${author.name != null}" th:type="checkbox" th:name="author" th:value="${author.name}">
+                <span th:if="${author.name != null}" th:text="${author.name}"></span>
+            </div>
+            <div>
+                <label for="start">Start Date and Time:</label>
+                <input type="datetime-local" id="start" name="start" >
+
+                <label for="end">End Date and Time:</label>
+                <input type="datetime-local" id="end" name="end">
+            </div>
+            <input type="hidden" th:value="${search}" name="search">
+            <input th:type="submit" th:value="submit">
+        </form>
+    </div>
+    <div class="second">
+        <div class="container">
+            <div class="posts" th:each="singlepost: ${allposts}">
+                <a th:method="post" th:href="@{/post/readForm(formId = ${singlepost.id})}">
+                    <div class="items">
+                        <h3 th:text="${singlepost.title}"/>
+                        <span th:text="${singlepost.author.name}"/>
+                        <span th:text="${singlepost.publishedAt}"/>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
 </body>
 </html>
