@@ -8,6 +8,10 @@ import com.mountblue.blogapp.Repository.PostRepository;
 import com.mountblue.blogapp.Repository.TagRepository;
 import com.mountblue.blogapp.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,10 +46,7 @@ public class PostServiceImpl implements PostService {
         return userRepository.findById(3).get();
     }
 
-    @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
-    }
+
 
     @Override
     public List<Post> getSortedList(String direction) {
@@ -63,19 +64,38 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> filtering(List<String> authors, List<String> tags, LocalDateTime startTime, LocalDateTime endTime, String search) {
+    public Page<Post> paginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+        return postRepository.findAll(pageable);
+    }
+
+
+
+    @Override
+    public Page<Post> filtering(List<String> authors, List<String> tags, LocalDateTime startTime, LocalDateTime endTime,String search, Integer pageNo,String direction) {
         if (startTime == null) {
             startTime = postRepository.findOldestPost().getPublishedAt();
         }
         if (endTime == null) {
             endTime = LocalDateTime.now();
         }
-        if(search!=null)
+        Pageable pageable = null;
+        if(direction.equals("ASC"))
         {
-            return postRepository.filteringPostsonSearch(authors,tags,startTime,endTime,search);
+            pageable = PageRequest.of(pageNo-1,2,Sort.by("publishedAt").ascending());
         }
-        return postRepository.filteringPosts(authors, tags,startTime,endTime);
+        else
+        {
+            pageable = PageRequest.of(pageNo-1,2,Sort.by("publishedAt").descending());
+        }
+        return postRepository.filteringPostsonSearch(authors, tags, startTime, endTime, search, pageable);
     }
+
+    @Override
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
+    }
+
 
     @Override
     public void deletePost(Post post) {

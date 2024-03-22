@@ -21,7 +21,7 @@
             max-width: 92%;
             width: 100%;
             margin: 10px;
-           border: 1px solid black;
+            border: 1px solid black;
             padding: 20px;
         }
 
@@ -39,21 +39,17 @@
             padding-left: 10px;
         }
 
-       .tag{
-           height: 20px;
-           overflow-y: scroll;
-
-       }
         .second {
             border: 1px solid black;
             margin-left: 30px;
 
         }
-         .tag > form{
-             display: flex;
-             flex-direction: column;
-             gap: 10px;
-         }
+
+        .tag > form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
         .container {
             display: grid;
@@ -75,6 +71,7 @@
             height: auto;
             overflow: scroll;
         }
+
         .footer {
             max-width: 90%;
             width: 100%;
@@ -96,20 +93,29 @@
     <h2>BLOG APPLICATION</h2>
     <div class="filters">
         <div>
-            <form th:action="@{/post/sort}" method="get">
+            <form th:action="@{/post/filter/1}" method="get">
                 <select id="sortBy" name="direction">
                     <option disabled selected>Sort by:</option>
                     <option value="ASC">Oldest</option>
                     <option value="DESC">Latest</option>
                 </select>
                 <input type="hidden" th:value="${search}" name="search">
+                <input type="hidden" name="start" th:value="${start}">
+                <input type="hidden" name="end" th:value="${end}">
+                <div th:each="author:${checkedAuthors}">
+                    <input type="hidden" name="author" th:value="${author}">
+                </div>
+                <div th:each="tag:${checkedTags}">
+                    <input type="hidden" name="tag" th:value="${tag}">
+                </div>
                 <input type="submit" value="Submit">
             </form>
 
         </div>
         <div>
-            <form th:action="@{/post/search}" method="get">
+            <form th:action="@{/post/filter/1}" method="get">
                 <input name="search" type="text" placeholder="search by title,tag,content">
+
                 <input type="submit" value="submit">
             </form>
         </div>
@@ -117,25 +123,29 @@
 </div>
 <div class="main">
     <div class="first">
-        <form th:action="@{/post/filter}" th:method="get">
+        <form th:action="@{/post/filter/1}" th:method="get">
             <label>Tags</label>
             <div class="tag" th:each="tag:${alltags}">
-                <input th:if="${tag.name != null}" th:type="checkbox" th:name="tag" th:value="${tag.name}">
+                <input th:if="${tag.name != null}" th:type="checkbox" th:name="tag" th:value="${tag.name}"
+                       th:checked="${checkedTags.contains(tag.name)}">
                 <span th:if="${tag.name != null}" th:text="${tag.name}"></span>
             </div>
             <label>Author</label>
             <div class="author" th:each="author:${allusers}">
-                <input th:if="${author.name != null}" th:type="checkbox" th:name="author" th:value="${author.name}">
+                <input th:if="${author.name != null}" th:type="checkbox" th:name="author" th:value="${author.name}"
+                       th:checked="${checkedAuthors != null and checkedAuthors.contains(author.name)}">
                 <span th:if="${author.name != null}" th:text="${author.name}"></span>
             </div>
             <div>
+                <input type="hidden" th:value="1" name="pageNo">
                 <label for="start">Start Date and Time:</label>
-                <input type="datetime-local" id="start" name="start" >
+                <input type="datetime-local" id="start" name="start">
 
                 <label for="end">End Date and Time:</label>
                 <input type="datetime-local" id="end" name="end">
             </div>
             <input type="hidden" th:value="${search}" name="search">
+            <input type="hidden" name="direction" th:value="${direction}">
             <input th:type="submit" th:value="submit">
         </form>
     </div>
@@ -152,7 +162,41 @@
             </div>
         </div>
     </div>
+    <div th:if="${totalPages>1}">
+        <span th:text="${totalItems}">total Elements</span>
+        <div>
+            <form th:if="${currentPage > 1}" th:action="@{'/post/filter/' + ${currentPage - 1}}" method="get">
+                <input type="hidden" name="start" th:value="${start}">
+                <input type="hidden" name="end" th:value="${end}">
+                <input type="hidden" name="search" th:value="${search}">
+                <div th:each="author:${checkedAuthors}">
+                    <input type="hidden" name="author" th:value="${author}">
+                </div>
+                <div th:each="tag:${checkedTags}">
+                    <input type="hidden" name="tag" th:value="${tag}">
+                </div>
+                <input type="hidden" name="direction" th:value="${direction}">
+                <button type="submit">Previous</button>
+            </form>
 
+        </div>
+        <div>
+            <form th:if="${currentPage < totalPages}" th:action="@{'/post/filter/' + ${currentPage + 1}}" method="get">
+                <input type="hidden" name="start" th:value="${start}">
+                <input type="hidden" name="end" th:value="${end}">
+                <input type="hidden" name="search" th:value="${search}">
+                <div th:each="author:${checkedAuthors}">
+                    <input type="hidden" name="author" th:value="${author}">
+                </div>
+                <div th:each="tag:${checkedTags}">
+                    <input type="hidden" name="tag" th:value="${tag}">
+                </div>
+                <input type="hidden" name="direction" th:value="${direction}">
+                <button type="submit">NEXT</button>
+            </form>
+        </div>
+
+    </div>
 
 </div>
 </body>

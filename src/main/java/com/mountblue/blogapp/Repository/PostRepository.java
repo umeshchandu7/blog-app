@@ -1,6 +1,8 @@
 package com.mountblue.blogapp.Repository;
 
 import com.mountblue.blogapp.Entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,16 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             + "CASE WHEN :direction = 'DESC' THEN e.publishedAt END DESC")
     List<Post> getSortedPosts(@Param("direction") String direction);
 
-    @Query("SELECT DISTINCT p FROM Post p " +
-            "JOIN p.author a " +
-            "JOIN p.tags t " +
-            "WHERE (:authors IS NULL OR a.name IN :authors) " +
-            "AND (:tags IS NULL OR t.name IN :tags) " +
-            "AND (p.publishedAt BETWEEN :startTime AND :endTime)")
-    List<Post> filteringPosts(@Param("authors") List<String> authors,
-                              @Param("tags") List<String> tags,
-                              @Param("startTime") LocalDateTime startTime,
-                              @Param("endTime") LocalDateTime endtime);
 
     @Query("SELECT p FROM Post p " +
             "WHERE p.isPublished = true " +
@@ -38,12 +30,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "WHERE (:authors IS NULL OR a.name IN :authors) " +
             "AND (:tags IS NULL OR t.name IN :tags) " +
             "AND (p.publishedAt BETWEEN :startTime AND :endTime) " +
-            "AND (p.title LIKE %:search% OR p.content LIKE %:search% OR t.name LIKE %:search% OR a.name LIKE %:search% )")
-    List<Post> filteringPostsonSearch(@Param("authors") List<String> authors,
+            "AND (:search IS NULL OR p.title LIKE %:search% OR p.content LIKE %:search% OR t.name LIKE %:search% OR a.name LIKE %:search% ) "
+            )
+    Page<Post> filteringPostsonSearch(@Param("authors") List<String> authors,
                                       @Param("tags") List<String> tags,
                                       @Param("startTime") LocalDateTime startTime,
-                                      @Param("endTime") LocalDateTime endtime,
-                                      @Param("search") String search);
+                                      @Param("endTime") LocalDateTime endTime,
+                                      @Param("search") String search,
+                                      Pageable pageable);
+
 
     @Query("SELECT DISTINCT p from Post p " + "JOIN p.tags t " +
             "WHERE p.author.name LIKE %:search% OR p.content LIKE %:search% OR p.title LIKE %:search% OR t.name LIKE %:search%")
