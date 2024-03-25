@@ -4,13 +4,12 @@ import com.mountblue.blogapp.Entity.Comment;
 import com.mountblue.blogapp.Entity.Post;
 import com.mountblue.blogapp.Entity.Tag;
 import com.mountblue.blogapp.Entity.User;
-import com.mountblue.blogapp.Service.CommentService;
-import com.mountblue.blogapp.Service.PostService;
-import com.mountblue.blogapp.Service.PostServiceImpl;
-import com.mountblue.blogapp.Service.TagService;
+import com.mountblue.blogapp.Service.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +19,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
-@RequestMapping("/post")
 public class PostController {
 
     private PostService postService;
     private CommentService commentService;
     private TagService tagService;
+    private UserService userService;
 
     @Autowired
-    public PostController(PostService postService, CommentService commentService, TagService tagService) {
+    public PostController(PostService postService, CommentService commentService, TagService tagService,UserService userService) {
         this.postService = postService;
         this.commentService = commentService;
         this.tagService = tagService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -48,41 +48,50 @@ public class PostController {
     }
 
     @PostMapping("/publish")
-    public String publish(@ModelAttribute("post") Post post) {
+    public String publish(@ModelAttribute("post") Post post,@AuthenticationPrincipal UserDetails userDetails) {
         List<Tag> tags = tagService.checkForTags(post.getTagList());
         post.setTagsList(tags);
         if (post.getPublished() == null) {
             post.setPublished(true);
             post.setPublishedAt(LocalDateTime.now());
-            post.setAuthor(postService.getUser());
+            post.setAuthor(userService.findByUserName(userDetails.getUsername()));
         } else {
             post.setUpdatedAt(LocalDateTime.now());
         }
         postService.savePost(post);
-        return "redirect:/post/filter/1";
+        return "redirect:/filter/1";
     }
 
     @GetMapping("/readForm")
-    public String readForm(Model model, @RequestParam("formId") Integer id) {
+    public String readForm(Model model, @RequestParam("formId") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.getPostById(id);
         model.addAttribute("post", post);
         Comment newComment = new Comment();
         model.addAttribute("comment", newComment);
+        if(userDetails!=null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
         return "read_Form";
     }
 
     @GetMapping("/updateForm")
-    public String updateForm(Model model, @RequestParam("formId") Integer id) {
+    public String updateForm(Model model, @RequestParam("formId") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.getPostById(id);
         model.addAttribute("post", post);
+        if(userDetails!=null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
         return "create_post";
     }
 
     @GetMapping("/deleteForm")
-    public String deleteForm(Model model, @RequestParam("formId") Integer id) {
+    public String deleteForm(Model model, @RequestParam("formId") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
-        return "redirect:/post/filter/1";
+        if(userDetails!=null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
+        return "redirect:/filter/1";
     }
 
 

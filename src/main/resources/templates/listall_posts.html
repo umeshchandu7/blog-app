@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -93,7 +93,7 @@
     <h2>BLOG APPLICATION</h2>
     <div class="filters">
         <div>
-            <form th:action="@{/post/filter/1}" method="get">
+            <form th:action="@{/filter/1}" method="get">
                 <select id="sortBy" name="direction">
                     <option disabled selected>Sort by:</option>
                     <option value="ASC">Oldest</option>
@@ -113,17 +113,26 @@
 
         </div>
         <div>
-            <form th:action="@{/post/filter/1}" method="get">
+            <form th:action="@{/filter/1}" method="get">
                 <input name="search" type="text" placeholder="search by title,tag,content">
 
                 <input type="submit" value="submit">
             </form>
         </div>
+        <a th:method="get" th:href="@{/loginUser}" style="margin: 20px 0 0 0" >login</a>
+        <form sec:authorize="hasAnyRole('AUTHOR','ADMIN')" th:action="@{/logout}" method="post">
+            <input type="submit" value="logout">
+        </form>
     </div>
+</div>
+<div sec:authorize="hasAnyRole('AUTHOR','ADMIN')">
+    <form th:action="@{/newpost}">
+        <input type="submit" value="CREATE POST">
+    </form>
 </div>
 <div class="main">
     <div class="first">
-        <form th:action="@{/post/filter/1}" th:method="get">
+        <form th:action="@{/filter/1}" th:method="get">
             <label>Tags</label>
             <div class="tag" th:each="tag:${alltags}">
                 <input th:if="${tag.name != null}" th:type="checkbox" th:name="tag" th:value="${tag.name}"
@@ -137,7 +146,7 @@
                 <span th:if="${author.name != null}" th:text="${author.name}"></span>
             </div>
             <div>
-                <input type="hidden" th:value="1" name="pageNo">
+<!--                <input type="hidden" th:value="1" name="pageNo">-->
                 <label for="start">Start Date and Time:</label>
                 <input type="datetime-local" id="start" name="start">
 
@@ -152,7 +161,7 @@
     <div class="second">
         <div class="container">
             <div class="posts" th:each="singlepost: ${allposts}">
-                <a th:method="post" th:href="@{/post/readForm(formId = ${singlepost.id})}">
+                <a th:method="post" th:href="@{/readForm(formId = ${singlepost.id})}">
                     <div class="items">
                         <h3 th:text="${singlepost.title}"/>
                         <span th:text="${singlepost.author.name}"/>
@@ -165,7 +174,7 @@
     <div th:if="${totalPages>1}">
         <span th:text="${totalItems}">total Elements</span>
         <div>
-            <form th:if="${currentPage > 1}" th:action="@{'/post/filter/' + ${currentPage - 1}}" method="get">
+            <form th:if="${currentPage > 1}" th:action="@{'/filter/' + ${currentPage - 1}}" method="get">
                 <input type="hidden" name="start" th:value="${start}">
                 <input type="hidden" name="end" th:value="${end}">
                 <input type="hidden" name="search" th:value="${search}">
@@ -181,7 +190,7 @@
 
         </div>
         <div>
-            <form th:if="${currentPage < totalPages}" th:action="@{'/post/filter/' + ${currentPage + 1}}" method="get">
+            <form th:if="${currentPage < totalPages}" th:action="@{'/filter/' + ${currentPage + 1}}" method="get">
                 <input type="hidden" name="start" th:value="${start}">
                 <input type="hidden" name="end" th:value="${end}">
                 <input type="hidden" name="search" th:value="${search}">

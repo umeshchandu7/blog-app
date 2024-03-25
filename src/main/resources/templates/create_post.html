@@ -47,7 +47,7 @@
 <body>
 <div class="container">
     <div><h1> NEW/EDIT POST</h1></div>
-    <form th:action="@{/post/publish}" th:object="${post}" th:method= "post">
+    <form th:action="@{/publish}" th:object="${post}" th:method= "post">
         <div class="entry"><label>Title</label>
             <input type="text" th:field="*{title}">
         </div>

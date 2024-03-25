@@ -6,6 +6,8 @@ import com.mountblue.blogapp.Service.CommentService;
 import com.mountblue.blogapp.Service.PostService;
 import com.mountblue.blogapp.Service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 
-@RequestMapping("/comment")
+
 @Controller
 public class CommentController {
     private PostService postService;
@@ -30,7 +32,9 @@ public class CommentController {
     }
 
     @PostMapping("/addComment")
-    public String addComment(Model theModel, @RequestParam("id") Integer postId, @RequestParam("coId") Integer commentId, @RequestParam("comment") String comment) {
+    public String addComment(Model theModel, @RequestParam("id") Integer postId, @RequestParam("coId") Integer commentId,
+                             @RequestParam("comment") String comment
+            ,@AuthenticationPrincipal UserDetails userDetails) {
 
         Post currentPost = postService.getPostById(postId);
         if (commentId != 0) {
@@ -48,25 +52,34 @@ public class CommentController {
         postService.savePost(currentPost);
         theModel.addAttribute("post", currentPost);
         theModel.addAttribute("comment", new Comment());
+        if(userDetails!=null) {
+            theModel.addAttribute("username", userDetails.getUsername());
+        }
         return "read_Form";
     }
 
     @GetMapping("/updateComment")
-    public String updateComment(@RequestParam("postId") Integer postId, @RequestParam("commentId") Integer id, Model model) {
+    public String updateComment(@RequestParam("postId") Integer postId, @RequestParam("commentId") Integer id,@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Post currentPost = postService.getPostById(postId);
         Comment comment = commentService.getCommentById(id);
         model.addAttribute("post", currentPost);
         model.addAttribute("comment", comment);
+        if(userDetails!=null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
         return "read_Form";
     }
 
     @GetMapping("deleteComment")
-    public String deleteComment(@RequestParam("postId") Integer postId, @RequestParam("commentId") Integer id, Model model) {
+    public String deleteComment(@RequestParam("postId") Integer postId, @RequestParam("commentId") Integer id,@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Post currentPost = postService.getPostById(postId);
         Comment comment = commentService.getCommentById(id);
         commentService.deleteCommentById(id);
         model.addAttribute("post", currentPost);
         model.addAttribute("comment", new Comment());
+        if(userDetails!=null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
         return "read_Form";
     }
 }

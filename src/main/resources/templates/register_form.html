@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register Form</title>
+    <style>
+        body{
+            justify-content: center;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            height: 50vh;
+            justify-items: center;
+            align-items: center;
+            border: 1px solid black;
+            max-width: 20%;
+            width: 100%;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+   <h2>REGISTER USER</h2>
+<form th:action="@{/processUser}" >
+    <input type="text" placeholder="Name" name="name">
+    <input type="text" placeholder="enter Email" name="email">
+    <input type="password" placeholder="enter password" name = "pass">
+    <input type="password" placeholder="confirm password" name = "conpass">
+    <input type="submit" value="Register">
+</form>
+    <p>already have an account?</p> <a th:href="@{/loginUser}">login</a>
+</div>
+</body>
+</html>

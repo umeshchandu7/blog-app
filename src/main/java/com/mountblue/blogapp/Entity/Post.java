@@ -23,8 +23,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "author")
     private User author;
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "published_at")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime publishedAt;
     @Column(name = "is_published")
     private Boolean isPublished;

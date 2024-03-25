@@ -43,4 +43,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT DISTINCT p from Post p " + "JOIN p.tags t " +
             "WHERE p.author.name LIKE %:search% OR p.content LIKE %:search% OR p.title LIKE %:search% OR t.name LIKE %:search%")
     List<Post> searchWithAuthorOrContentOrTitleOrTags(@Param("search") String search);
+
+
 }
