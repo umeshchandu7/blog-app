@@ -107,10 +107,10 @@
             </a>
     </footer>
     <footer th:if="${(username!=null)}" sec:authorize="hasRole('ADMIN')" >
-        <a th:href="@{/updateForm(formId=${post.id})}" th:if="${post.author.name==username}" th:method="get">
+        <a th:href="@{/updateForm(formId=${post.id})}"  th:method="get">
             <input type="button" value="Update">
         </a>
-        <a th:href="@{/deleteForm(formId=${post.id})}" th:if="${post.author.name==username}" th:method="get">
+        <a th:href="@{/deleteForm(formId=${post.id})}"  th:method="get">
             <input type="button" value="Delete" th:method="post">
         </a>
     </footer>

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostService  {
     public Post getPostById(int id);
-    public void savePost(Post post);
+    public Post savePost(Post post);
     public User getUser();
     public void deletePost(Post post);
     public List<Post> getSortedList(String direction);
@@ -20,4 +20,5 @@ public interface PostService  {
     public Page<Post> filtering(List<String> authors, List<String> tags, LocalDateTime startTime,LocalDateTime endTime,String search,Integer pageNo,String direction);
 
 public List<Post> getAllPosts();
+public void deletePostById(Integer postId);
 }

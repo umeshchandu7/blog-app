@@ -14,9 +14,6 @@ public class Tag {
     private int id;
     @Column(name = "name")
     private String name;
-    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinTable(name = "post_tags",joinColumns = @JoinColumn(name = "tag_id"),inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private List<Post> posts;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
@@ -43,14 +40,6 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
     }
 
     public LocalDateTime getCreatedAt() {

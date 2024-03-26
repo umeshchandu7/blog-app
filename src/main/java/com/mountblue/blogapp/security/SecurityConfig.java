@@ -3,7 +3,9 @@ package com.mountblue.blogapp.security;
 import com.mountblue.blogapp.Service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -34,8 +36,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/readForm","/","/filter/**","/register","/processUser**").permitAll()
-                               // .requestMatchers().hasRole("AUTHOR")
+                                .requestMatchers("/readForm","/","/register","/processUser**","/api/Post").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/filter/**").permitAll()
+                                .requestMatchers(HttpMethod.PUT,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/api/Posts/").hasAnyRole("AUTHOR","ADMIN")
+                                .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->
@@ -49,7 +55,7 @@ public class SecurityConfig {
                 .exceptionHandling(configurer ->
                         configurer.accessDeniedPage("/access-denied")
                 );
-
+http.httpBasic(Customizer.withDefaults()); http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 }

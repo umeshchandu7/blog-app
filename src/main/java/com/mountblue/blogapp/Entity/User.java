@@ -18,8 +18,8 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-    @OneToMany(mappedBy = "author")
-    private List<Post> posts;
+//    @OneToMany(mappedBy = "author")
+//    private List<Post> posts;
 
     public User() {
     }
@@ -29,11 +29,6 @@ public class User {
         this.password = password;
     }
 
-//    public User(String name, String password, Collection<Role> roles) {
-//        this.name = name;
-//        this.password = password;
-//        this.roles = roles;
-//    }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
@@ -73,13 +68,13 @@ public class User {
         this.password = password;
     }
 
-    public List<Post> getPosts() {
-        return posts;
-    }
+//    public List<Post> getPosts() {
+//        return posts;
+//    }
 
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
+//    public void setPosts(List<Post> posts) {
+//        this.posts = posts;
+//    }
 
     public Collection<Role> getRoles() {
         return roles;
