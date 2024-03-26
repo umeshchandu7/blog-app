@@ -44,8 +44,8 @@ public class BlogController {
     @PostMapping("/Posts")
     public Post createPost(@RequestBody Post post) {
         post.setId(0);
-        List<Tag> tags = tagService.checkForTags(post.getTagList());
-        post.setTagsList(tags);
+//        List<Tag> tags = tagService.checkForTags(post.getTagList());
+//        post.setTagsList(tags);
         Post newPost = postService.savePost(post);
         return newPost;
     }
