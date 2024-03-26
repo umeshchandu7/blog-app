@@ -36,7 +36,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/readForm","/","/register","/processUser**","/api/Post").permitAll()
+                                .requestMatchers("/readForm","/","/register","/processUser**","/api/Post","/filter/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/filter/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
                                 .requestMatchers(HttpMethod.POST,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
