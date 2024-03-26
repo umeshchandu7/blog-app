@@ -84,7 +84,7 @@
 <div class="container">
     <header>
         <h2>Blog Application</h2>
-        <a th:method="get" th:href="@{/loginUser}" style="margin: 20px 0 0 0">login</a>
+        <a th:if="${username==null}" th:method="get" th:href="@{/loginUser}" style="margin: 20px 0 0 0">login</a>
     </header>
     <div class="content">
         <h1 th:text="${post.title}"/>

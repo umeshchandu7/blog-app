@@ -27,7 +27,7 @@ public class PostController {
     private UserService userService;
 
     @Autowired
-    public PostController(PostService postService, CommentService commentService, TagService tagService,UserService userService) {
+    public PostController(PostService postService, CommentService commentService, TagService tagService, UserService userService) {
         this.postService = postService;
         this.commentService = commentService;
         this.tagService = tagService;
@@ -36,7 +36,7 @@ public class PostController {
 
     @GetMapping("/")
     public String getListOfPosts(Model model) {
-        return filter(null, null, null, null, null, 1, "DESC", model);
+        return filter(null, null, null, null, null, 1, "DESC", null,model);
     }
 
     @GetMapping("/newpost")
@@ -48,9 +48,14 @@ public class PostController {
     }
 
     @PostMapping("/publish")
-    public String publish(@ModelAttribute("post") Post post,@AuthenticationPrincipal UserDetails userDetails) {
-        List<Tag> tags = tagService.checkForTags(post.getTagList());
-        post.setTagsList(tags);
+    public String publish(@ModelAttribute("post") Post post, @ModelAttribute("tags") String tagString, @AuthenticationPrincipal UserDetails userDetails) {
+        List<String> tagList = List.of(tagString.split(","));
+        List<Tag> tags = new ArrayList<>();
+        for (String tagName : tagList) {
+            tags.add(new Tag(tagName));
+        }
+        List<Tag> newTags = tagService.checkForTags(tags);
+        post.setTagsList(newTags);
         if (post.getPublished() == null) {
             post.setPublished(true);
             post.setPublishedAt(LocalDateTime.now());
@@ -68,27 +73,27 @@ public class PostController {
         model.addAttribute("post", post);
         Comment newComment = new Comment();
         model.addAttribute("comment", newComment);
-        if(userDetails!=null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
         }
         return "read_Form";
     }
 
     @GetMapping("/updateForm")
-    public String updateForm(Model model, @RequestParam("formId") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
+    public String updateForm(Model model, @RequestParam("formId") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.getPostById(id);
         model.addAttribute("post", post);
-        if(userDetails!=null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
         }
         return "create_post";
     }
 
     @GetMapping("/deleteForm")
-    public String deleteForm(Model model, @RequestParam("formId") Integer id,@AuthenticationPrincipal UserDetails userDetails) {
+    public String deleteForm(Model model, @RequestParam("formId") Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
-        if(userDetails!=null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
         }
         return "redirect:/filter/1";
@@ -103,6 +108,7 @@ public class PostController {
                          @RequestParam(value = "search", required = false) String search,
                          @PathVariable(value = "pageNo", required = false) Integer pageNo,
                          @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                         @AuthenticationPrincipal UserDetails userDetails,
                          Model model) {
         Page<Post> page = postService.filtering(author, tags, startTime, endTime, search, pageNo, direction);
         List<Post> postList = page.getContent();
@@ -126,6 +132,9 @@ public class PostController {
         model.addAttribute("checkedTags", tags);
         model.addAttribute("direction", direction);
         model.addAttribute("checkedAuthors", author);
+        if (userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
         return "listall_posts";
     }
 

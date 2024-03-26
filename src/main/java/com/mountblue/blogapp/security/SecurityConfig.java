@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
                                 .requestMatchers(HttpMethod.POST,"/api/Posts").hasAnyRole("AUTHOR","ADMIN")
                                 .requestMatchers(HttpMethod.DELETE,"/api/Posts/").hasAnyRole("AUTHOR","ADMIN")
-                                .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/Posts").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->

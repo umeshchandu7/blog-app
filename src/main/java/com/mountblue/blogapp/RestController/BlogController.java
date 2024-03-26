@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -37,15 +39,28 @@ public class BlogController {
 
     @PutMapping("/Posts")
     public Post updatePost(@RequestBody Post post) {
-
+        List<String> tagList = List.of(post.getTags().split(","));
+        Set<String> tags = new HashSet<>(tagList);
+        List<Tag> resultList = new ArrayList<>();
+        for (String tagName : tags) {
+            resultList.add(new Tag(tagName));
+        }
+        List<Tag> newTags = tagService.checkForTags(resultList);
+        post.setTagsList(newTags);
     return postService.savePost(post);
     }
 
     @PostMapping("/Posts")
     public Post createPost(@RequestBody Post post) {
         post.setId(0);
-//        List<Tag> tags = tagService.checkForTags(post.getTagList());
-//        post.setTagsList(tags);
+        List<String> tagList = List.of(post.getTags().split(","));
+        Set<String> tags = new HashSet<>(tagList);
+        List<Tag> resultList = new ArrayList<>();
+        for (String tagName : tags) {
+            resultList.add(new Tag(tagName));
+        }
+        List<Tag> newTags = tagService.checkForTags(resultList);
+        post.setTagsList(newTags);
         Post newPost = postService.savePost(post);
         return newPost;
     }

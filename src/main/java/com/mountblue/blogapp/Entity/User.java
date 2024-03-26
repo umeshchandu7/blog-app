@@ -18,8 +18,7 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-//    @OneToMany(mappedBy = "author")
-//    private List<Post> posts;
+
 
     public User() {
     }
@@ -68,13 +67,7 @@ public class User {
         this.password = password;
     }
 
-//    public List<Post> getPosts() {
-//        return posts;
-//    }
 
-//    public void setPosts(List<Post> posts) {
-//        this.posts = posts;
-//    }
 
     public Collection<Role> getRoles() {
         return roles;
